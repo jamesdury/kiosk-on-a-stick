@@ -1,0 +1,35 @@
+name: build kiosk iso
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v27
+        with:
+          nix_path: nixpkgs=channel:nixos-24.11
+
+      - name: Install nixos-generators
+        run: nix-env -f https://github.com/nix-community/nixos-generators/archive/master.tar.gz -i
+      
+      - name: Generate ISO
+        run: nixos-generate -f raw -c configuration.nix -o result
+      
+      - name: Prepare artifacts
+        run: |
+          mkdir output
+          cp result/*.img output/
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: ./output
