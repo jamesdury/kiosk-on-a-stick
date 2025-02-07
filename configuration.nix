@@ -10,20 +10,15 @@
   system.stateVersion = "24.11";
 
   environment.defaultPackages = [ ];
-  environment.systemPackages = with pkgs; [ firefox cage ];
-
-  environment.variables = { WLR_LIBINPUT_NO_DEVICES = "1"; };
+  environment.systemPackages = with pkgs; [ electron cage ];
 
   time.timeZone = "Europe/London";
   i18n.defaultLocale = "en_GB.UTF-8";
   console.keyMap = "uk";
 
-  programs.firefox.enable = true;
-
   services.cage.enable = true;
   services.cage.program =
-    "${pkgs.firefox}/bin/firefox -kiosk https://www.google.com";
-
+    "${pkgs.electron}/bin/electron https://www.google.com";
 
   systemd.services.cage-tty1 = {
     # confirm network connection is active before running
